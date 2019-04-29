@@ -1,0 +1,31 @@
+{
+    "name": "jun3/php-cc",
+    "description": "PHP的Git代码提交规范检查",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "git",
+        "commit",
+        "git-commit",
+        "pre-commit"
+    ],
+    "authors": [{
+        "name": "哲学",
+        "email": "zhexue33@gmail.com"
+    }],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Jun3\\PhpCc\\": "src"
+        }
+    },
+    "require-dev": {
+        "overtrue/phplint": "^1.1",
+        "squizlabs/php_codesniffer": "^3.4"
+    },
+    "scripts": {
+        "post-package-install": ["Jun3\PhpCc\Phpcc::install"],
+        "post-autoload-dump": ["Jun3\PhpCc\Phpcc::isInstall"],
+        "post-package-uninstall": ["Jun3\PhpCc\Phpcc::remove"]
+    }
+}
