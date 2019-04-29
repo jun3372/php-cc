@@ -34,6 +34,8 @@ class Phpcc
         $sourceCommitFilePath = self::getRootPath('pre-commit');
         if (!is_file($commitFilePath)) {
             copy($sourceCommitFilePath, $commitFilePath);
+            // 添加执行权限
+            exec("chmod -R +x $commitFilePath", $output, $return_var);
         }
 
         // 获取文件的md5至并判断是否一致
@@ -43,12 +45,14 @@ class Phpcc
             // 备份就的文件
             copy($commitFilePath, $commitFilePath . '.backup.' . time());
 
+            echo "安装成功", PHP_EOl;
             // 拷贝新的文件
             copy($sourceCommitFilePath, $commitFilePath);
-            // exec("cp $sourceCommitFilePath $commitFilePath");
 
             // 添加执行权限
-            exec("chmod -R +x $commitFilePath");
+            exec("chmod -R +x $commitFilePath", $output, $return_var);
+            var_dump($return_var);
+            var_dump($output);
         }
     }
 
@@ -96,10 +100,6 @@ class Phpcc
             self::install();
 
             return false;
-        }
-        
-        if (1 == 2) {
-            return 1;
         }
 
         return true;

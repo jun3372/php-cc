@@ -4,8 +4,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Jun3\PhpCc\Phpcc;
 
-$root = Phpcc::isInstall();
+$root = Phpcc::install();
 
+die;
 exec('git status -s', $files, $return_var);
 
 echo "----------", PHP_EOL;
