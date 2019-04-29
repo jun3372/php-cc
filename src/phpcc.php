@@ -47,7 +47,7 @@ class Phpcc
             copy($sourceCommitFilePath, $commitFilePath);
 
             // 添加权限
-            \chmod($commitFilePath, 0755);
+            \chmod($commitFilePath, 0777);
         }
     }
 
