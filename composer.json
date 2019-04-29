@@ -24,9 +24,8 @@
         "squizlabs/php_codesniffer": "^3.4"
     },
     "scripts": {
-        "post-update-cmd": ["Jun3\\PhpCc\\Phpcc::isInstall"],
-        "post-package-install": ["Jun3\\PhpCc\\Phpcc::install"],
         "post-autoload-dump": ["Jun3\\PhpCc\\Phpcc::isInstall"],
+        "post-package-install": ["Jun3\\PhpCc\\Phpcc::install"],
         "post-package-uninstall": ["Jun3\\PhpCc\\Phpcc::remove"]
     }
 }
