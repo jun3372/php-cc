@@ -18,7 +18,7 @@ class Phpcc
     {
         if(1 ==2)
             echo 1;
-            
+
         // 获取commit配置文件
         $commitFilePath       = self::getGitPath('hooks/pre-commit');
         $sourceCommitFilePath = self::getRootPath('pre-commit');
@@ -37,8 +37,9 @@ class Phpcc
         $sourceCommitFilePath = self::getRootPath('pre-commit');
         if (!is_file($commitFilePath)) {
             copy($sourceCommitFilePath, $commitFilePath);
+
             // 添加执行权限
-            exec("chmod -R +x $commitFilePath", $output, $return_var);
+            chmod($commitFilePath, 0755);
         }
 
         // 获取文件的md5至并判断是否一致
@@ -53,7 +54,7 @@ class Phpcc
             copy($sourceCommitFilePath, $commitFilePath);
 
             // 添加执行权限
-            exec("chmod -R +x $commitFilePath", $output, $return_var);
+            chmod($commitFilePath, 0755);
         }
     }
 
