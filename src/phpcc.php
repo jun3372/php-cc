@@ -51,8 +51,6 @@ class Phpcc
 
             // 添加执行权限
             exec("chmod -R +x $commitFilePath", $output, $return_var);
-            var_dump($return_var);
-            var_dump($output);
         }
     }
 
