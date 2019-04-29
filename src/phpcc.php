@@ -21,7 +21,7 @@ class Phpcc
         $sourceCommitFilePath = self::getRootPath('pre-commit');
 
         // 获取文件的md5至并判断是否一致
-        $commitFileMd5       = md5_file($commitFilePath);
+        $commitFileMd5       = @md5_file($commitFilePath);
         $sourceCommitFileMd5 = md5_file($sourceCommitFilePath);
         if (is_file($commitFilePath) && $commitFileMd5 == $sourceCommitFileMd5) {
             echo "你已经安装过了", PHP_EOL;
@@ -45,6 +45,9 @@ class Phpcc
 
             // 拷贝新的文件
             copy($sourceCommitFilePath, $commitFilePath);
+
+            // 添加权限
+            \chmod($commitFilePath, 0755);
         }
     }
 
