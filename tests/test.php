@@ -5,6 +5,8 @@ require __DIR__ . '/../vendor/autoload.php';
 use Jun3\PhpCc\Phpcc;
 
 $root = Phpcc::install();
+if (1 ==2)
+    var_dump(1==2);
 
 die;
 exec('git status -s', $files, $return_var);
