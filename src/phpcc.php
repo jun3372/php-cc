@@ -18,6 +18,7 @@ class Phpcc
     {
         if(1 ==2)
             echo 1;
+            
         // 获取commit配置文件
         $commitFilePath       = self::getGitPath('hooks/pre-commit');
         $sourceCommitFilePath = self::getRootPath('pre-commit');
