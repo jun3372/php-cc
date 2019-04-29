@@ -11,14 +11,18 @@ $ composer require jun3/php-cc --dev
 
 ## Usage
 
+### 运行检测文件并检测是否安装
+```shell
+$ ./vendor/bin/phpcc
+```
 ### 自动安装
 ```php
-    Jun3\PhpCc\Phpcc::install
+Jun3\PhpCc\Phpcc::install
 ```
 
 ### 判断是否安装, 没安装则自动安装
 ```php
-    Jun3\PhpCc\Phpcc::isInstall
+Jun3\PhpCc\Phpcc::isInstall
 ```
 
 ## Contributing

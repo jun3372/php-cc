@@ -22,6 +22,9 @@
             "Jun3\\PhpCc\\": "src"
         }
     },
+    "bin": [
+        "bin/phpcc"
+    ],
     "scripts": {
         "post-autoload-dump": ["Jun3\\PhpCc\\Phpcc::isInstall"],
         "post-package-install": ["Jun3\\PhpCc\\Phpcc::install"],

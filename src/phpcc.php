@@ -18,20 +18,17 @@ class Phpcc
     {
         // 获取commit配置文件
         $commitFilePath       = self::getGitPath('hooks/pre-commit');
-        $sourceCommitFilePath = self::getRootPath('pre-commit');
+        $sourceCommitFilePath = self::getDirPath('bin/phpcc');
 
         // 获取文件的md5至并判断是否一致
         $commitFileMd5       = @md5_file($commitFilePath);
-        $sourceCommitFileMd5 = md5_file($sourceCommitFilePath);
+        $sourceCommitFileMd5 = @md5_file($sourceCommitFilePath);
         if (is_file($commitFilePath) && $commitFileMd5 == $sourceCommitFileMd5) {
             echo "你已经安装过了", PHP_EOL;
 
             return;
         }
 
-        // 获取commit配置文件
-        $commitFilePath       = self::getGitPath('hooks/pre-commit');
-        $sourceCommitFilePath = self::getRootPath('pre-commit');
         if (!is_file($commitFilePath)) {
             copy($sourceCommitFilePath, $commitFilePath);
 
@@ -45,7 +42,7 @@ class Phpcc
         if ($commitFileMd5 != $sourceCommitFileMd5) {
             // 备份就的文件
             copy($commitFilePath, $commitFilePath . '.backup.' . time());
-            
+
             // 拷贝新的文件
             copy($sourceCommitFilePath, $commitFilePath);
 
@@ -84,7 +81,7 @@ class Phpcc
 
         // 获取commit配置文件
         $commitFilePath       = self::getGitPath('hooks/pre-commit');
-        $sourceCommitFilePath = self::getRootPath('pre-commit');
+        $sourceCommitFilePath = self::getDirPath('bin/phpcc');
         if (!is_file($commitFilePath)) {
             self::install();
 
@@ -154,8 +151,6 @@ class Phpcc
         // 获取git配置路径
         $gitPath = self::getGitPath();
         if (is_dir($gitPath)) {
-            var_dump($gitPath);
-
             return true;
         }
 
@@ -203,12 +198,27 @@ class Phpcc
             if (substr($path, 0, 1) == DIRECTORY_SEPARATOR) {
                 $path = substr($path, 1);
             }
-
-            //            if (substr($path, -1) != DIRECTORY_SEPARATOR) {
-            //                $path .= DIRECTORY_SEPARATOR;
-            //            }
         }
 
         return getcwd() . DIRECTORY_SEPARATOR . $path;
+    }
+
+    /**
+     * 获取当前组件根目录
+     *
+     * @param string $path
+     * @return string
+     */
+    public static function getDirPath($path = ''): string
+    {
+        if (strlen($path) > 0) {
+            if (substr($path, 0, 1) == DIRECTORY_SEPARATOR) {
+                $path = substr($path, 1);
+            }
+        }
+
+        $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+
+        return $dir . $path;
     }
 }

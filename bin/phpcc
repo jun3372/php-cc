@@ -1,6 +1,14 @@
 #!/usr/bin/env php
 <?php
 
+use Jun3\PhpCc\Phpcc;
+
+// 引入自动加载文件
+require getcwd() . '/vendor/autoload.php';
+
+// 是否已经安装
+Phpcc::isInstall();
+
 // 获取改变文件列表
 exec('git status -s', $files, $return_var);
 
@@ -29,13 +37,16 @@ foreach ($files as $item) {
     // 执行phpcs文件检测
     exec("./vendor/bin/phpcs -n --standard=psr2 " . $fileName, $output, $return_var);
     if ($return_var) {
+        echo PHP_EOL;
         foreach ($output as $out) {
             if (empty($out)) {
                 continue;
             }
+            
             echo $out, PHP_EOL;
         }
 
+        echo PHP_EOL;
         // 等待用户确认是否需要自动修复
         fwrite(STDOUT, "是否需要使用phpcbf修复代码(Y|N)：");
         $option = trim(fgets(STDIN));
@@ -44,11 +55,13 @@ foreach ($files as $item) {
         if (strtoupper($option) == 'Y') {
             exec("./vendor/bin/phpcbf " . $fileName, $output, $return_var);
             if ($return_var) {
-                echo  $fileName . ", 修复成功: ", PHP_EOL;
+                echo  $fileName . ", 修复成功", PHP_EOL;
             } else {
                 echo $fileName . ", 修复失败, 请手动修复", PHP_EOL;
             }
         }
+
+        echo PHP_EOL;
         die;
     }
 
