@@ -45,8 +45,7 @@ class Phpcc
         if ($commitFileMd5 != $sourceCommitFileMd5) {
             // 备份就的文件
             copy($commitFilePath, $commitFilePath . '.backup.' . time());
-
-            echo "安装成功", PHP_EOl;
+            
             // 拷贝新的文件
             copy($sourceCommitFilePath, $commitFilePath);
 
