@@ -44,10 +44,8 @@ class Phpcc
             copy($commitFilePath, $commitFilePath . '.backup.' . time());
 
             // 拷贝新的文件
-            copy($sourceCommitFilePath, $commitFilePath);
-
-            // 添加权限
-            \chmod($commitFilePath, 0777);
+            // copy($sourceCommitFilePath, $commitFilePath);
+            exec("cp $sourceCommitFilePath $commitFilePath");
         }
     }
 
