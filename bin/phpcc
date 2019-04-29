@@ -1,13 +1,14 @@
 #!/usr/bin/env php
 <?php
 
-use Jun3\PhpCc\Phpcc;
+// 是否存在自动加载文件
+if (is_file(getcwd() . '/vendor/autoload.php')) {
+    // 引入自动加载文件
+    require getcwd() . '/vendor/autoload.php';
 
-// 引入自动加载文件
-require getcwd() . '/vendor/autoload.php';
-
-// 是否已经安装
-Phpcc::isInstall();
+    // 是否已经安装
+    Jun3\PhpCc\Phpcc::isInstall();
+}
 
 // 获取改变文件列表
 exec('git status -s', $files, $return_var);
