@@ -5,9 +5,9 @@ require __DIR__ . '/../vendor/autoload.php';
 use Jun3\PhpCc\Phpcc;
 
 $root = Phpcc::install();
-if (1 ==2)
-
-    var_dump(1==2);
+if (1 == 2) {
+    var_dump(1 == 2);
+}
 
 die;
 exec('git diff --name-only', $files, $return_var);

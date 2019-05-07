@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+
 // 是否存在自动加载文件
 if (is_file(getcwd() . '/vendor/autoload.php')) {
     // 引入自动加载文件
@@ -9,6 +10,7 @@ if (is_file(getcwd() . '/vendor/autoload.php')) {
     // 是否已经安装
     Jun3\PhpCc\Phpcc::isInstall();
 }
+
 
 // 执行文件检测
 diffFile();
@@ -38,7 +40,12 @@ function diffFile()
             continue;
         }
 
-        checkFile($fileName);
+        try {
+            checkFile($fileName);
+        } catch (\Throwable $throwanle) {
+            $phpcs = getVendorPath() . '/bin/phpcs';
+            checkFile($fileName, $phpcs);
+        }
     }
 }
 
@@ -74,7 +81,12 @@ function checkFile(string $fileName, string $phpcs = '')
         $option = trim(fgets(STDIN));
         // 是否自动修复
         if (strtoupper($option) == 'Y') {
-            repairFile($fileName);
+            try {
+                repairFile($fileName);
+            } catch (\Throwable $throwanle) {
+                $phpcbf = getVendorPath() . '/bin/phpcbf';
+                repairFile($fileName, $phpcbf);
+            }
         }
 
         echo PHP_EOL;
@@ -103,4 +115,74 @@ function repairFile(string $fileName = '', string $phpcbf = '')
     } else {
         echo $fileName . ", 修复失败, 请手动修复", PHP_EOL;
     }
+}
+
+/**
+ * 获取 Vendor 目录
+ *
+ * @param string $root
+ * @return string
+ */
+function getVendorPath(string $root = ''): string
+{
+    $path = $_SERVER['VENDOR_PATH'] ?? '';
+
+    if (is_dir($path)) {
+        return $path;
+    }
+
+    if (!isset($_SERVER['GIT_PATH'])) {
+        $gitPath             = getGitPath();
+        $_SERVER['GIT_PATH'] = $gitPath;
+    }
+
+    // 获取根目录
+    if (empty($root)) {
+        $root  = dirname($_SERVER['GIT_PATH']);
+    }
+
+    $items = glob($root);
+    foreach ($items as $item) {
+        $path = $item . DIRECTORY_SEPARATOR . 'vendor';
+        if (is_dir($path)) {
+            $_SERVER['VENDOR_PATH'] = $path;
+            return $path;
+        }
+    }
+
+    return $path;
+}
+
+/**
+ * 获取Git安装目录
+ *
+ * @param string $path
+ * @return void
+ */
+function getGitPath(string $path = ''): string
+{
+    $rootPath = getcwd();
+    $result   = true;
+    $gitPath  = '';
+    while ($result) {
+        $gitPath = $rootPath . '.git';
+        if (is_dir($gitPath)) {
+            $result = false;
+        }
+
+        // 获取上级目录
+        $rootPath = dirname($rootPath);
+    }
+
+    // 是否为空
+    if (empty($rootPath)) {
+        die("你还没有初始化Git仓库");
+    }
+
+    // 拼接后缀
+    if (!empty($path)) {
+        $gitPath .= DIRECTORY_SEPARATOR . $path;
+    }
+
+    return $gitPath;
 }
