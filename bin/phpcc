@@ -148,6 +148,16 @@ function getVendorPath(string $root = ''): string
             $_SERVER['VENDOR_PATH'] = $path;
             return $path;
         }
+
+        // 是否为目录
+        if (is_dir($item)) {
+            $item = getVendorPath($item);
+            $path = $item . DIRECTORY_SEPARATOR . 'vendor';
+            if (is_dir($path)) {
+                $_SERVER['VENDOR_PATH'] = $path;
+                return $path;
+            }
+        }
     }
 
     return $path;
