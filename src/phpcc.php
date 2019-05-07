@@ -16,8 +16,22 @@ class Phpcc
      */
     public static function install()
     {
+        // commit前置文件
+        static::installFile('pre-commit');
+        // push 前置文件
+        static::installFile('pre-push');
+    }
+
+    /**
+     * 安装文件
+     *
+     * @param string $fileName
+     * @return void
+     */
+    public static function installFile(string $fileName = 'pre-commit')
+    {
         // 获取commit配置文件
-        $commitFilePath       = self::getGitPath('hooks/pre-commit');
+        $commitFilePath       = self::getGitPath('hooks/' . $fileName);
         $sourceCommitFilePath = self::getDirPath('bin/phpcc');
 
         // 获取文件的md5至并判断是否一致
@@ -56,13 +70,22 @@ class Phpcc
      */
     public static function remove()
     {
-        $commitFilePath = self::getGitPath('hooks/pre-commit');
+        // 移除 commit 前置文件
+        static::removeFile('pre-commit');
+        // 移除 push 前置文件
+        static::removeFile('pre-push');
+    }
+
+    public static function removeFile(string $fileName = 'pre-commit')
+    {
+        $commitFilePath = self::getGitPath("hooks/{$fileName}");
         if (is_file($commitFilePath)) {
             unlink($commitFilePath);
         }
 
-        echo '移除pre-commit文件成功', PHP_EOL;
+        echo "移除{$fileName}文件成功", PHP_EOL;
     }
+
 
     /**
      * 是否已经安装
@@ -79,8 +102,29 @@ class Phpcc
             return false;
         }
 
+        // commit 前置文件
+        $result = static::isInstallFile('pre-commit');
+        if (!$result) {
+            return $result;
+        }
+
+        // push 前置文件
+        $result = static::isInstallFile('pre-push');
+
+        return $result;
+    }
+
+
+    /**
+     * 是否安装过文件
+     *
+     * @param string $fileName
+     * @return boolean
+     */
+    public static function isInstallFile(string $fileName = 'pre-commit'): bool
+    {
         // 获取commit配置文件
-        $commitFilePath       = self::getGitPath('hooks/pre-commit');
+        $commitFilePath       = self::getGitPath("hooks/{$fileName}");
         $sourceCommitFilePath = self::getDirPath('bin/phpcc');
         if (!is_file($commitFilePath)) {
             self::install();
@@ -99,6 +143,7 @@ class Phpcc
 
         return true;
     }
+
 
     /**
      * 是否安装phplint
@@ -183,7 +228,7 @@ class Phpcc
 
         // 是否为空
         if (empty($rootPath)) {
-            die( "你还没有初始化Git仓库");
+            die("你还没有初始化Git仓库");
         }
 
         // 拼接后缀
