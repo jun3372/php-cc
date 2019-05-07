@@ -10,56 +10,71 @@ if (is_file(getcwd() . '/vendor/autoload.php')) {
     Jun3\PhpCc\Phpcc::isInstall();
 }
 
-// 获取改变文件列表
-exec('git status -s', $files, $return_var);
+// 执行文件检测
+diffFile();
 
-if (empty($files)) {
-    echo "没有发现文件变化", PHP_EOL;
-    die;
+/**
+ * 获取待检测文件列表
+ *
+ * @return void
+ */
+function diffFile()
+{
+    // 获取改变文件列表
+    // exec('git status -s', $files, $return_var);
+    exec('git diff --name-only', $files, $return_var);
+
+    if (empty($files)) {
+        echo "没有发现文件变化", PHP_EOL;
+        die;
+    }
+
+    foreach ($files as $item) {
+        // 获取文件名称
+        $fileName = $item;
+
+        // 跳过不是php文件的
+        if (substr($fileName, -4) != '.php') {
+            continue;
+        }
+
+        checkFile($fileName);
+    }
 }
 
-foreach ($files as $item) {
-    $item = explode(' ', $item);
-    if (count($item) < 2) {
-        continue;
-    }
-
-    if (in_array($item[0], ['A', 'D', 'M'])) {
-        continue;
-    }
-
-    // 获取文件名称
-    $fileName = end($item);
-    // 跳过不是php文件的
-    if (substr($fileName, -4) != '.php') {
-        continue;
+/**
+ * 执行代码检测
+ *
+ * @param string $fileName
+ * @param string $phpcs
+ * @return void
+ */
+function checkFile(string $fileName, string $phpcs = '')
+{
+    if (empty($phpcs)) {
+        $phpcs = 'phpcs';
     }
 
     // 执行phpcs文件检测
-    exec("./vendor/bin/phpcs -n --standard=psr2 " . $fileName, $output, $return_var);
+    $script = $phpcs . " -n --standard=psr2 " . $fileName;
+    exec($script, $output, $return_var);
     if ($return_var) {
         echo PHP_EOL;
         foreach ($output as $out) {
             if (empty($out)) {
                 continue;
             }
-            
+
             echo $out, PHP_EOL;
         }
-
         echo PHP_EOL;
+
         // 等待用户确认是否需要自动修复
         fwrite(STDOUT, "是否需要使用phpcbf修复代码(Y|N)：");
         $option = trim(fgets(STDIN));
-
         // 是否自动修复
         if (strtoupper($option) == 'Y') {
-            exec("./vendor/bin/phpcbf " . $fileName, $output, $return_var);
-            if ($return_var) {
-                echo  $fileName . ", 修复成功", PHP_EOL;
-            } else {
-                echo $fileName . ", 修复失败, 请手动修复", PHP_EOL;
-            }
+            repairFile($fileName);
         }
 
         echo PHP_EOL;
@@ -67,4 +82,25 @@ foreach ($files as $item) {
     }
 
     echo "phpcs file {$fileName} success !", PHP_EOL;
+}
+
+/**
+ * 修复代码
+ *
+ * @param string $fileName
+ * @param string $phpcbf
+ * @return void
+ */
+function repairFile(string $fileName = '', string $phpcbf = '')
+{
+    if (empty($phpcbf)) {
+        $phpcbf = 'phpcbf';
+    }
+
+    exec("{$phpcbf} " . $fileName, $output, $return_var);
+    if ($return_var) {
+        echo  $fileName . ", 修复成功", PHP_EOL;
+    } else {
+        echo $fileName . ", 修复失败, 请手动修复", PHP_EOL;
+    }
 }

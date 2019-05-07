@@ -168,7 +168,22 @@ class Phpcc
      */
     public static function getGitPath($path = ''): string
     {
-        $path = self::getRootPath('.git' . DIRECTORY_SEPARATOR . $path);
+        $rootPath = self::getRootPath();
+        $result = true;
+        while ($result) {
+            $path = $rootPath . '.git';
+            if (is_dir($path)) {
+                $result = false;
+            }
+
+            // 获取上级目录
+            $rootPath = dirname($rootPath);
+        }
+
+        // 拼接后缀
+        if (!empty($path)) {
+            $path .= DIRECTORY_SEPARATOR . $path;
+        }
 
         return $path;
     }
