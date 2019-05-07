@@ -10,7 +10,7 @@ if (1 ==2)
     var_dump(1==2);
 
 die;
-exec('git status -s', $files, $return_var);
+exec('git diff --name-only', $files, $return_var);
 
 echo "----------", PHP_EOL;
 

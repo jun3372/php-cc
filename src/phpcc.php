@@ -169,10 +169,11 @@ class Phpcc
     public static function getGitPath($path = ''): string
     {
         $rootPath = self::getRootPath();
-        $result = true;
+        $result   = true;
+        $gitPath  = '';
         while ($result) {
-            $path = $rootPath . '.git';
-            if (is_dir($path)) {
+            $gitPath = $rootPath . '.git';
+            if (is_dir($gitPath)) {
                 $result = false;
             }
 
@@ -180,12 +181,17 @@ class Phpcc
             $rootPath = dirname($rootPath);
         }
 
-        // 拼接后缀
-        if (!empty($path)) {
-            $path .= DIRECTORY_SEPARATOR . $path;
+        // 是否为空
+        if (empty($rootPath)) {
+            die( "你还没有初始化Git仓库");
         }
 
-        return $path;
+        // 拼接后缀
+        if (!empty($path)) {
+            $gitPath .= DIRECTORY_SEPARATOR . $path;
+        }
+
+        return $gitPath;
     }
 
     /**
