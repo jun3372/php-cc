@@ -26,7 +26,7 @@ function diffFile()
 
     if (empty($files)) {
         echo "没有发现文件变化", PHP_EOL;
-        die;
+        return;
     }
 
     foreach ($files as $item) {
